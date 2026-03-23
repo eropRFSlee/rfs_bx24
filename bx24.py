@@ -1,6 +1,11 @@
 from flask import Flask, request
+import os
 
 app = Flask(__name__)
+
+# Проверяем, что переменная окружения загрузилась
+BITRIX_WEBHOOK = os.getenv('BITRIX_WEBHOOK_URL')
+print(f"Вебхук загружен: {BITRIX_WEBHOOK}")
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
