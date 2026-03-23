@@ -19,6 +19,13 @@ def get_deal():
         
         # Форматируем ответ для читаемости
         data = response.json()
+        print(f"""
+        <pre>
+        Статус: {response.status_code}
+        Ответ:
+        {json.dumps(data, indent=2, ensure_ascii=False)}
+        </pre>
+        """)
         return f"""
         <pre>
         Статус: {response.status_code}
