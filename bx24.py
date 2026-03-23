@@ -13,7 +13,7 @@ def send_webhook():
     try:
         # Отправляем запрос на webhook.site
         response = requests.post(
-            'https://drlk.rfs.ru/rest/205/euti36505v9h07wx/',
+            'https://drlk.rfs.ru/rest/205/euti36505v9h07wx/crm.deal.get.json?id=3555',
             json={
                 'test': 'Привет от render.com',
                 'time': 'проверка связи',
