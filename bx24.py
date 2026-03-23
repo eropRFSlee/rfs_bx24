@@ -4,7 +4,7 @@ import os
 app = Flask(__name__)
 
 # Проверяем, что переменная окружения загрузилась
-BITRIX_WEBHOOK = os.getenv('BITRIX_WEBHOOK_URL')
+BITRIX_WEBHOOK = 'https://drlk.rfs.ru/rest/205/euti36505v9h07wx/'
 print(f"Вебхук загружен: {BITRIX_WEBHOOK}")
 
 @app.route('/webhook', methods=['POST'])
