@@ -1,9 +1,9 @@
 name: Send hourly email
 
 on:
+  push:
+    branches: [ main ]
   schedule:
-    # Каждые 30 минут с 6:00 до 17:30 UTC = с 9:00 до 18:30 MSK
-    # Но чтобы не выходить за 18:00 MSK, ставим до 15:30 UTC = 18:30 MSK
     - cron: '*/30 6-15 * * 1-5'
   workflow_dispatch:
 
