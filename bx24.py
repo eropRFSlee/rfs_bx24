@@ -6,7 +6,7 @@ from email.mime.multipart import MIMEMultipart
 SMTP_SERVER = "smtp.yandex.ru"
 SMTP_PORT = 465
 SENDER_EMAIL = "eroproralee@yandex.ru"
-SENDER_PASSWORD = "erhsfnfzxbhywnmj"  # Пароль приложения, не пароль от аккаунта!
+SENDER_PASSWORD = "erhsfnfzxbhywnmj"  # Пароль приложения, не fdsfsd пароль от аккаунта!
 
 # Данные получателя
 RECIPIENT_EMAIL = "egorka_li@mail.ru"
