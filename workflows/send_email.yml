@@ -1,27 +1,27 @@
-name: Send email from Bitrix24 script
+name: Send hourly email
+
 on:
   schedule:
-    - cron: '0 9-18 * * 1-5'   # каждый час с 9 до 18, пн-пт
-  workflow_dispatch:            # чтобы можно было запустить вручную
+    # Каждый час с 9 до 18 по Москве (6-15 UTC)
+    - cron: '0 6-15 * * 1-5'
+  workflow_dispatch:
 
 jobs:
-  run-script:
+  send-email:
     runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      
-      - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      
-      - name: Run bx24 script
-        env:
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          # Добавьте другие переменные, если нужны
-        run: python bx24.py
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    
+    - name: Run script
+      run: python bx24.py
