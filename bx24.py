@@ -1,56 +1,42 @@
-from flask import Flask, request
-import requests
-import json
-from datetime import datetime
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-app = Flask(__name__)
+# Данные отправителя
+SMTP_SERVER = "smtp.yandex.ru"
+SMTP_PORT = 465
+SENDER_EMAIL = "eroproralee@yandex.ru"
+SENDER_PASSWORD = "erhsfnfzxbhywnmj"  # Пароль приложения, не пароль от аккаунта!
 
-# Ваш входящий вебхук (токен)
-BITRIX_WEBHOOK = 'https://drlk.rfs.ru/rest/205/euti36505v9h07wx/'
-print(f"Вебхук загружен: {BITRIX_WEBHOOK}")
+# Данные получателя
+RECIPIENT_EMAIL = "egorka_li@mail.ru"
 
-# ========== МАРШРУТ ДЛЯ РОБОТА (ЕГО ВЫЗЫВАЕТ БИТРИКС) ==========
-@app.route('/webhook', methods=['POST'])
-def webhook():
-    print("=" * 60)
-    print(f"[{datetime.now()}] ПОЛУЧЕН ЗАПРОС ОТ БИТРИКС24!")
-    
-    # Получаем данные, которые прислал Битрикс24
-    data = request.form.to_dict()
-    print("Данные от Битрикс:", data)
-    
-    # Из данных достаем ID сделки (он может быть в разных ключах)
-    deal_id = None
-    if 'data[FIELDS][ID]' in data:
-        deal_id = data['data[FIELDS][ID]']
-    elif 'id' in data:
-        deal_id = data['id']
-    
-    if deal_id:
-        print(f"Получен ID сделки: {deal_id}")
+# Тема и текст письма
+SUBJECT = "Тестовое письмо"
+BODY = "Привет! Это тестовое письмо, отправленное через Python."
+
+def send_email():
+    try:
+        # Создаем письмо
+        msg = MIMEMultipart()
+        msg["From"] = SENDER_EMAIL
+        msg["To"] = RECIPIENT_EMAIL
+        msg["Subject"] = SUBJECT
         
-        # Теперь запрашиваем полные данные сделки через входящий вебхук
-        try:
-            url = f"{BITRIX_WEBHOOK}crm.deal.get.json"
-            params = {'id': deal_id}
-            response = requests.get(url, params=params)
-            deal_data = response.json()
+        # Добавляем тело письма
+        msg.attach(MIMEText(BODY, "plain", "utf-8"))
+        
+        # Подключаемся к серверу и отправляем
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+            server.login(SENDER_EMAIL, SENDER_PASSWORD)
+            server.send_message(msg)
             
-            print(f"Полные данные сделки {deal_id}:")
-            print(json.dumps(deal_data, indent=2, ensure_ascii=False))
-            
-        except Exception as e:
-            print(f"Ошибка при получении данных сделки: {e}")
-    else:
-        print("ID сделки не найден в полученных данных")
-    
-    print("=" * 60)
-    return "OK", 200
+        print("✅ Письмо успешно отправлено!")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Ошибка при отправке: {e}")
+        return False
 
-# ========== ГЛАВНАЯ СТРАНИЦА ДЛЯ ПРОВЕРКИ ==========
-@app.route('/')
-def home():
-    return "Сервер работает. Робот настроен на /webhook"
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+if __name__ == "__main__":
+    send_email()
