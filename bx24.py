@@ -2,15 +2,14 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import Flask
-import os
 
 app = Flask(__name__)
 
-SMTP_SERVER = "smtp.yandex.ru"
+SMTP_SERVER = "smtp.mail.ru"
 SMTP_PORT = 465
-SENDER_EMAIL = "eroproralee@yandex.ru"
-SENDER_PASSWORD = "erhsfnfzxbhywnmj"
-RECIPIENT_EMAIL = "egorka_li@mail.ru"
+SENDER_EMAIL = "egorka_li@mail.ru"
+SENDER_PASSWORD = "JdBqwlzz0wH0tueZXWIY"
+RECIPIENT_EMAIL = "eroproralee@yandex.ru"
 SUBJECT = "Тестовое письмо"
 BODY = "Привет! Это тестовое письмо, отправленное через Python."
 
