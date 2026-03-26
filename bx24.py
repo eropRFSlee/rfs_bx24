@@ -1,14 +1,11 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-from flask import Flask
-
-app = Flask(__name__)
 
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SENDER_EMAIL = "egor58241@gmail.com"
-SENDER_PASSWORD = "lrmg pate yxhj tkpe"
+SENDER_PASSWORD = "lrmg pate yxhj tkpe"  # твой пароль приложения
 RECIPIENT_EMAIL = "eroproralee@yandex.ru"
 SUBJECT = "Тестовое письмо"
 BODY = "Привет! Это тестовое письмо, отправленное через Python."
@@ -25,11 +22,7 @@ def send_email():
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.send_message(msg)
     
-    return "OK"
-
-@app.route('/')
-def index():
-    return send_email()
+    print("✅ Письмо успешно отправлено!")
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)
+    send_email()
