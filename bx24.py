@@ -1,28 +1,44 @@
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
+from flask import Flask, request, jsonify
+import requests
 
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 587
-SENDER_EMAIL = "egor58241@gmail.com"
-SENDER_PASSWORD = "lrmg pate yxhj tkpe"  # твой пароль приложения
-RECIPIENT_EMAIL = "eroproralee@yandex.ru"
-SUBJECT = "Тестовое письмо"
-BODY = "Привет! Это тестовое письмо, отправленное через Python."
+app = Flask(__name__)
 
-def send_email():
-    msg = MIMEMultipart()
-    msg["From"] = SENDER_EMAIL
-    msg["To"] = RECIPIENT_EMAIL
-    msg["Subject"] = SUBJECT
-    msg.attach(MIMEText(BODY, "plain", "utf-8"))
+WEBHOOK = "https://drlk.rfs.ru/rest/205/euti36505v9h07wx/"
+
+def get_all_emails():
+    emails = []
+    start = 0
     
-    with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-        server.starttls()
-        server.login(SENDER_EMAIL, SENDER_PASSWORD)
-        server.send_message(msg)
+    while True:
+        r = requests.post(f"{WEBHOOK}crm.company.list", json={
+            "select": ["ID", "EMAIL"],
+            "start": start
+        })
+        data = r.json()
+        
+        for company in data["result"]:
+            email = company.get("EMAIL")
+            if email:
+                emails.append(email)
+        
+        if not data.get("next"):
+            break
+        start = data["next"]
     
-    print("✅ Письмо успешно отправлено!")
+    return emails
 
-if __name__ == "__main__":
-    send_email()
+@app.route('/check_email', methods=['POST'])
+def check_email():
+    data = request.get_json()
+    email_to_check = data.get('email', '')
+    
+    if not email_to_check:
+        return jsonify({'found': False})
+    
+    all_emails = get_all_emails()
+    found = email_to_check in all_emails
+    
+    return jsonify({'found': found})
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
